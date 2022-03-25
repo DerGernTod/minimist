@@ -56,9 +56,10 @@ module.exports = function (args, opts) {
             if (flags.unknownFn(arg) === false) return;
         }
 
-        var value = !flags.strings[key] && isNumber(val)
-            ? Number(val) : val
-        ;
+        var value = val;
+        if (!flags.strings[key] && isNumber(val)){
+            value = val > Number.MAX_SAFE_INTEGER ? BigInt(val) : Number(val);
+        }
         setKey(argv, key.split('.'), value);
         
         (aliases[key] || []).forEach(function (x) {
@@ -192,7 +193,7 @@ module.exports = function (args, opts) {
         else {
             if (!flags.unknownFn || flags.unknownFn(arg) !== false) {
                 argv._.push(
-                    flags.strings['_'] || !isNumber(arg) ? arg : Number(arg)
+                    flags.strings['_'] || !isNumber(arg) ? arg : arg > Number.MAX_SAFE_INTEGER ? BigInt(arg) : Number(arg)
                 );
             }
             if (opts.stopEarly) {

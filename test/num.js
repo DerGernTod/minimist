@@ -34,3 +34,29 @@ test('already a number', function (t) {
     t.deepEqual(typeof argv._[0], 'number');
     t.end();
 });
+
+test('large nums', function (t) {
+    var argv = parse([
+        '-v', '555555555555555555',
+        '-w', '55555555555555555',
+        '-x', '5555555555555555',
+        '-y', '10000000000000005',
+        '-z', '10000000000000095',
+        '5555555555555555555'
+    ]);
+    t.deepEqual(argv, {
+        v : 555555555555555555n,
+        w : 55555555555555555n,
+        x : 5555555555555555,
+        y : 10000000000000005n,
+        z : 10000000000000095n,
+        _ : [ 5555555555555555555n ]
+    });
+    t.deepEqual(typeof argv.v, 'bigint');
+    t.deepEqual(typeof argv.w, 'bigint');
+    t.deepEqual(typeof argv.x, 'number');
+    t.deepEqual(typeof argv.y, 'bigint');
+    t.deepEqual(typeof argv.z, 'bigint');
+    t.deepEqual(typeof argv._[0], 'bigint');
+    t.end();
+});
